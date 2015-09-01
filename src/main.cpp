@@ -55,6 +55,23 @@ void gameLoop() {
         while(SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
+            } else if ( e.type == SDL_KEYDOWN ) {
+                switch( e.key.keysym.sym ) {
+                    case SDLK_UP:
+                        printf("Up\n");
+                        break;
+                    case SDLK_DOWN:
+                        printf("Down\n");
+                        break;
+                    case SDLK_LEFT:
+                        printf("Left\n");
+                        break;
+                    case SDLK_RIGHT:
+                        printf("Right\n");
+                        break;
+                    default:
+                        break;
+                }
             }
             SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
             SDL_UpdateWindowSurface(gWindow);
