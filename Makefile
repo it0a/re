@@ -1,13 +1,9 @@
-OBJS = main.cpp
+OBJS = src/main.cpp
 
 CC = g++
-
-COMPILER_FLAGS = -w
-
-LINKER_FLAGS = -lSDL2
 
 OBJ_NAME = re
 
 all: $(OBJS)
-	$(CC) $(OBJS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+	$(CC) $(OBJS) `sdl2-config --cflags --libs` -o $(OBJ_NAME)
 
