@@ -52,9 +52,17 @@ void close() {
     SDL_Quit();
 }
 
+int changeModifier(int modifier) {
+    if (modifier > 100) {
+        return 0;
+    }
+    return modifier + 1;
+}
+
 void gameLoop() {
     bool quit = false;
     SDL_Event e;
+    int modifier = 0;
     while (!quit) {
         while(SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
@@ -63,15 +71,19 @@ void gameLoop() {
                 switch( e.key.keysym.sym ) {
                     case SDLK_UP:
                         printf("Up\n");
+                        modifier = changeModifier(modifier);
                         break;
                     case SDLK_DOWN:
                         printf("Down\n");
+                        modifier = changeModifier(modifier);
                         break;
                     case SDLK_LEFT:
                         printf("Left\n");
+                        modifier = changeModifier(modifier);
                         break;
                     case SDLK_RIGHT:
                         printf("Right\n");
+                        modifier = changeModifier(modifier);
                         break;
                     default:
                         break;
@@ -79,7 +91,7 @@ void gameLoop() {
             }
             SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
             SDL_RenderClear(gRenderer);
-            SDL_Rect fillRect = {SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2};
+            SDL_Rect fillRect = {modifier + SCREEN_WIDTH / 4, modifier + SCREEN_HEIGHT / 4, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2};
             SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
             SDL_RenderFillRect(gRenderer, &fillRect);
             SDL_Rect outlineRect = {SCREEN_WIDTH / 6, SCREEN_HEIGHT / 6, SCREEN_WIDTH * 2 / 3, SCREEN_HEIGHT * 2 / 3};
