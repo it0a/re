@@ -10,12 +10,10 @@ bool loadMedia();
 void close();
 
 SDL_Window* gWindow = NULL;
-SDL_Surface* gScreenSurface = NULL;
-SDL_Surface* gHelloWorld = NULL;
 
-SDL_Surface* loadSurface( std::string path );
-SDL_Surface* gCurrentSurface = NULL;
-
+SDL_Texture* gHelloWorld = NULL;
+SDL_Texture* loadTexture( std::string path );
+SDL_Renderer* gRenderer = NULL;
 
 bool init() {
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
@@ -27,12 +25,17 @@ bool init() {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return false;
     }
-    gScreenSurface = SDL_GetWindowSurface(gWindow);
+    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+    if (gRenderer == NULL) {
+        printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
+        return false;
+    }
+    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
     return true;
 }
 
 bool loadMedia() {
-    gHelloWorld = loadSurface("res/hello_world.bmp");
+    gHelloWorld = loadTexture("res/hello_world.bmp");
     if (gHelloWorld == NULL) {
         return false;
     }
@@ -41,10 +44,12 @@ bool loadMedia() {
 
 
 void close() {
-    SDL_FreeSurface(gHelloWorld);
+    SDL_DestroyTexture(gHelloWorld);
     gHelloWorld = NULL;
+    SDL_DestroyRenderer(gRenderer);
     SDL_DestroyWindow(gWindow);
     gWindow = NULL;
+    gRenderer = NULL;
     SDL_Quit();
 }
 
@@ -73,18 +78,26 @@ void gameLoop() {
                         break;
                 }
             }
-            SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
-            SDL_UpdateWindowSurface(gWindow);
+            SDL_RenderClear(gRenderer);
+            SDL_RenderCopy(gRenderer, gHelloWorld, NULL, NULL);
+            SDL_RenderPresent(gRenderer);
         }
     }
 }
 
-SDL_Surface* loadSurface( std::string path ) {
+SDL_Texture* loadTexture( std::string path ) {
+    SDL_Texture* newTexture = NULL;
     SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
     if (loadedSurface == NULL) {
         printf("Unable to load image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+    } else {
+        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+        if(newTexture == NULL) {
+            printf("Unable to create texture from %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+        }
+        SDL_FreeSurface(loadedSurface);
     }
-    return loadedSurface;
+    return newTexture;
 }
 
 int main( int argc, char* args[] ) {
