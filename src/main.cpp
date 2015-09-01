@@ -43,12 +43,24 @@ void close() {
     SDL_Quit();
 }
 
+void gameLoop() {
+    bool quit = false;
+    SDL_Event e;
+    while (!quit) {
+        while(SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            }
+            SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
+            SDL_UpdateWindowSurface(gWindow);
+        }
+    }
+}
+
 int main( int argc, char* args[] ) {
     if (init()) {
         if (loadMedia()) {
-            SDL_BlitSurface(gHelloWorld, NULL, gScreenSurface, NULL);
-            SDL_UpdateWindowSurface(gWindow);
-            SDL_Delay(2000);
+            gameLoop();
         }
     }
     close();
