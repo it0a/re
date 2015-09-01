@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <stdio.h>
+#include <string>
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -11,6 +12,10 @@ void close();
 SDL_Window* gWindow = NULL;
 SDL_Surface* gScreenSurface = NULL;
 SDL_Surface* gHelloWorld = NULL;
+
+SDL_Surface* loadSurface( std::string path );
+SDL_Surface* gCurrentSurface = NULL;
+
 
 bool init() {
     if ( SDL_Init(SDL_INIT_VIDEO) < 0 ) {
@@ -27,13 +32,13 @@ bool init() {
 }
 
 bool loadMedia() {
-    gHelloWorld = SDL_LoadBMP("res/hello_world.bmp");
+    gHelloWorld = loadSurface("res/hello_world.bmp");
     if (gHelloWorld == NULL) {
-        printf("Unable to load image %s! SDL Error: %s\n", "res/hello_world.bmp", SDL_GetError());
         return false;
     }
     return true;
 }
+
 
 void close() {
     SDL_FreeSurface(gHelloWorld);
@@ -55,6 +60,14 @@ void gameLoop() {
             SDL_UpdateWindowSurface(gWindow);
         }
     }
+}
+
+SDL_Surface* loadSurface( std::string path ) {
+    SDL_Surface* loadedSurface = SDL_LoadBMP(path.c_str());
+    if (loadedSurface == NULL) {
+        printf("Unable to load image %s! SDL Error: %s\n", path.c_str(), SDL_GetError());
+    }
+    return loadedSurface;
 }
 
 int main( int argc, char* args[] ) {
