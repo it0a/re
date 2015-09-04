@@ -4,6 +4,8 @@ CC = g++
 
 OBJ_NAME = re
 
+SDL=`sdl2-config --cflags --libs`
+
 all: $(OBJS)
-	$(CC) $(OBJS) `sdl2-config --cflags --libs` -o $(OBJ_NAME)
+	$(CC) $(OBJS) $(SDL) -o $(OBJ_NAME)
 
