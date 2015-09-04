@@ -2,7 +2,7 @@ CXX = g++
 CFLAGS=-Wall
 INCLUDE=`sdl2-config --cflags`
 LIBS=`sdl2-config --libs`
-SRCDIR=src/
+SRCDIR=src
 SOURCES=$(SRCDIR)/main.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
 OUT=bin/re
