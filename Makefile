@@ -1,11 +1,19 @@
-OBJS = src/main.cpp
+CXX = g++
+CFLAGS=-Wall
+INCLUDE=`sdl2-config --cflags`
+LIBS=`sdl2-config --libs`
+SOURCES=src/main.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+OUT=bin/re
 
-CC = g++
+all: $(OUT)
 
-OBJ_NAME = re
+$(OUT): $(OBJECTS)
+		$(CXX) $(CFLAGS) -o $(OUT) $(OBJECTS) $(LIBS)
 
-SDL=`sdl2-config --cflags --libs`
+%.o: %.cpp
+	$(CXX) -c $(CFLAGS) -o $@ $< $(INCLUDE)
 
-all: $(OBJS)
-	$(CC) $(OBJS) $(SDL) -o $(OBJ_NAME)
+clean:
+	rm -rf $(OUT) $(OBJECTS)
 
